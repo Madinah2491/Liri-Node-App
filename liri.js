@@ -2,28 +2,42 @@ require("dotenv").config();
 
 var keys = require ("./keys.js");
 
-var search = process.argv[2];
+var search = process.argv;
 
 var Spotify = require('node-spotify-api');
 
- function spotifySongs() {
+var fs = require("fs");
+
+var song = function (songname){
+  if (songname === undefined) {
+    songname = "Ace of Base"
+  }
+}
+
+  function spotifySongs() {
+
     var spotify = new Spotify({
     id: keys.spotify.id,
     secret: keys.spotify.secret
     });
-    
-    spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+
+    // spotify.get(function(query, hollaback){
+    spotify.search({ type: "track", query: song }, function(err, data) {
     if (err) {
         return console.log('Error occurred: ' + err);
     }
 
-    console.log(data.tracks); 
+    for (var i = 0; i < data.tracks.items.length; i++) {
+
+    console.log( "artist:" + data.tracks.items[i].artists.map(song)); 
+    console.log ("song name" + data.tracks.items[i].name) 
+  }
     });
  } 
 
 var Twitter = require('twitter');
-
- function mytweets (){
+  
+  function mytweets (){
 
     var client = new Twitter({
     consumer_key: keys.twitter.consumer_key,
@@ -34,10 +48,13 @@ var Twitter = require('twitter');
     
     var params = {screen_name: 'yepitsmadinah'};
     
-    client.get('search/tweets', params, function(error, tweets, response) {
+    client.get('statuses/user_timeline', params, function(error, tweets, response) {
         
         if (!error) {
-        console.log(tweets[1].text);
+          for (var i = 0; i < tweets.length; i++){
+        console.log(tweets[i].text);
+        console.log(tweets[i].created_at);
+        }   
     }
     });
 
@@ -48,25 +65,23 @@ var Twitter = require('twitter');
 
  var request = require("request");
 
-// Store all of the arguments in an array
-var nodeArgs = process.argv;
 
 // Create an empty variable for holding the movie name
 var movieName = "";
 
 // Loop through all the words in the node argument
 // And do a little for-loop magic to handle the inclusion of "+"s
-for (var i = 2; i < nodeArgs.length; i++) {
+for (var i = 2; i < search.length; i++) {
 
-  if (i > 2 && i < nodeArgs.length) {
+  if (i > 2 && i < search.length) {
 
-    movieName = movieName + "+" + nodeArgs[i];
+    movieName = movieName + "+" + search[i];
 
   }
 
   else {
 
-    movieName += nodeArgs[i];
+    movieName += search[i];
 
   }
 }
@@ -85,19 +100,19 @@ request(queryUrl, function(error, response, body) {
     // Parse the body of the site and recover just the imdbRating
     // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
     console.log("Release Year: " + JSON.parse(body).Year);
-  }
-});
-//  1. `node liri.js my-tweets`
+}})
+// });
+// //  1. `node liri.js my-tweets`
 
-//    * This will show your last 20 tweets and when they were created at in your terminal/bash window.
+// //    * This will show your last 20 tweets and when they were created at in your terminal/bash window.
 
-// 2. `node liri.js spotify-this-song '<song name here>'`
+// // 2. `node liri.js spotify-this-song '<song name here>'`
 
-//    * This will show the following information about the song in your terminal/bash window
+// //    * This will show the following information about the song in your terminal/bash window
      
-//      * Artist(s)
+// //      * Artist(s)
      
-//      * The song's name
+// //      * The song's name
      
-//      * A preview link of the song from Spotify
-     
+// //      * A preview link of the song from Spotify
+
