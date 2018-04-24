@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config(); 
 
 var keys = require ("./keys.js");
 
@@ -66,7 +66,7 @@ var Twitter = require('twitter');
 
  var request = require("request");
 
-var movie = function(movieName){
+var moviethis = function(movieName){
 // Create an empty variable for holding the movie name
   var movieName = "";
 
@@ -124,4 +124,4 @@ var movie = function(movieName){
 // //      * The song's name
      
 // //      * A preview link of the song from Spotify
-
+}
