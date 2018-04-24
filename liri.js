@@ -8,6 +8,7 @@ var Spotify = require('node-spotify-api');
 
 var fs = require("fs");
 
+//functions
 var song = function (songname){
   if (songname === undefined) {
     songname = "Ace of Base"
@@ -65,42 +66,50 @@ var Twitter = require('twitter');
 
  var request = require("request");
 
-
+var movie = function(movieName){
 // Create an empty variable for holding the movie name
-var movieName = "";
+  var movieName = "";
 
-// Loop through all the words in the node argument
-// And do a little for-loop magic to handle the inclusion of "+"s
-for (var i = 2; i < search.length; i++) {
+  // Loop through all the words in the node argument
+  // And do a little for-loop magic to handle the inclusion of "+"s
+  for (var i = 2; i < search.length; i++) {
 
-  if (i > 2 && i < search.length) {
+    if (i > 2 && i < search.length) {
 
-    movieName = movieName + "+" + search[i];
+      movieName = movieName + "+" + search[i];
 
+    }
+
+    else {
+
+      movieName += search[i];
+
+    }
   }
 
-  else {
+  // Then run a request to the OMDB API with the movie specified
+  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
-    movieName += search[i];
+  // This line is just to help us debug against the actual URL.
+  console.log(queryUrl);
 
-  }
-}
+  request(queryUrl, function(error, response, body) {
 
-// Then run a request to the OMDB API with the movie specified
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    // If the request is successful
+    if (!error && response.statusCode === 200) {
 
-// This line is just to help us debug against the actual URL.
-console.log(queryUrl);
+      // Parse the body of the site and recover just the imdbRating
+      // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+      console.log("Title: " + JSON.parse(body).Title);
+      console.log("Release Year: " + JSON.parse(body).Year);
+      console.log("Rated: " + JSON.parse(body).Rated);
+      console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+      console.log("Country: " + JSON.parse(body).Country);
+      console.log("Language: " + JSON.parse(body).Language);
+      console.log("Plot: " + JSON.parse(body).Plot);
+      console.log("Actors: " + JSON.parse(body).Actors);
 
-request(queryUrl, function(error, response, body) {
-
-  // If the request is successful
-  if (!error && response.statusCode === 200) {
-
-    // Parse the body of the site and recover just the imdbRating
-    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-    console.log("Release Year: " + JSON.parse(body).Year);
-}})
+  }})
 // });
 // //  1. `node liri.js my-tweets`
 
